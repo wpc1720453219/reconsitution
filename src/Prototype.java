@@ -25,12 +25,13 @@ public class Prototype {
 
     private static String statement() {
         int totalAmount = 0;
-        int volumeCredits = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
             result += "  " + playFor(perf).getName() + ": " + amountFor(perf) / 100 + "￥(" + perf.getAudience() + " seats)\n";
             totalAmount += amountFor(perf);
         }
+
+        int volumeCredits = 0;
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
             volumeCredits += volumeCreditsFor(perf);
         }
