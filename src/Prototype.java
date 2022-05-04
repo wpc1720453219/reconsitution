@@ -24,17 +24,12 @@ public class Prototype {
     }
 
     private static String statement() {
-        int totalAmount = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
             result += "  " + playFor(perf).getName() + ": " + amountFor(perf) / 100 + "￥(" + perf.getAudience() + " seats)\n";
-            totalAmount += amountFor(perf);
         }
-
-        int volumeCredits = totalVolumeCredits();
-
-        result += "Amount owed is " + totalAmount / 100 + "￥ \n";
-        result += "You earned " + volumeCredits + " credits\n";
+        result += "Amount owed is " + totalAmount() / 100 + "￥ \n";
+        result += "You earned " + totalVolumeCredits() + " credits\n";
         return result;
     }
 
@@ -80,6 +75,15 @@ public class Prototype {
         }
         return volumeCredits;
     }
+
+    private static int totalAmount() {
+        int totalAmount = 0;
+        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+            totalAmount += amountFor(perf);
+        }
+        return  totalAmount;
+    }
+
 
     public static void main(String[] args) {
         System.out.println(statement());
