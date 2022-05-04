@@ -28,13 +28,12 @@ public class Prototype {
         int volumeCredits = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            Plays play = playFor(perf);
-            int thisAmount = amountFor(perf,play);
+            int thisAmount = amountFor(perf,playFor(perf));
             volumeCredits += Math.max(perf.getAudience() - 30, 0);
-            if ("comedy".equals(play.getType())) {
+            if ("comedy".equals(playFor(perf).getType())) {
                 volumeCredits += Math.floor(perf.getAudience() / 5);
             }
-            result += "  " + play.getName() + ": " + thisAmount / 100 + "￥(" + perf.getAudience() + " seats)\n";
+            result += "  " + playFor(perf).getName() + ": " + thisAmount / 100 + "￥(" + perf.getAudience() + " seats)\n";
             totalAmount += thisAmount;
         }
         result += "Amount owed is " + totalAmount / 100 + "￥ \n";
