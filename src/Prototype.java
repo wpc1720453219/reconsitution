@@ -28,14 +28,13 @@ public class Prototype {
         int volumeCredits = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            int thisAmount = amountFor(perf);
-            volumeCredits += Math.max(perf.getAudience() - 30, 0);
-            if ("comedy".equals(playFor(perf).getType())) {
-                volumeCredits += Math.floor(perf.getAudience() / 5);
-            }
-            result += "  " + playFor(perf).getName() + ": " + thisAmount / 100 + "￥(" + perf.getAudience() + " seats)\n";
-            totalAmount += thisAmount;
+            result += "  " + playFor(perf).getName() + ": " + amountFor(perf) / 100 + "￥(" + perf.getAudience() + " seats)\n";
+            totalAmount += amountFor(perf);
         }
+        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+
         result += "Amount owed is " + totalAmount / 100 + "￥ \n";
         result += "You earned " + volumeCredits + " credits\n";
         return result;
@@ -63,8 +62,17 @@ public class Prototype {
         return result;
     }
 
-    private static Plays playFor(Invoices perf){
+    private static Plays playFor(Invoices perf) {
         return playsMap.get(perf.getPlayID());
+    }
+
+    private static int volumeCreditsFor(Invoices perf) {
+        int result = 0;
+        result += Math.max(perf.getAudience() - 30, 0);
+        if ("comedy".equals(playFor(perf).getType())) {
+            result += Math.floor(perf.getAudience() / 5);
+        }
+        return result;
     }
 
     public static void main(String[] args) {
