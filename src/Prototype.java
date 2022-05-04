@@ -29,24 +29,7 @@ public class Prototype {
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
             Plays play = playsMap.get(perf.getPlayID());
-            int thisAmount = 0;
-            switch (play.getType()) {
-                case "tragedy":
-                    thisAmount = 40000;
-                    if (perf.getAudience() > 30) {
-                        thisAmount += 1000 * (perf.getAudience() - 30);
-                    }
-                    break;
-                case "comedy":
-                    thisAmount = 30000;
-                    if (perf.getAudience() > 20) {
-                        thisAmount += 10000 + 500 * (perf.getAudience() - 20);
-                    }
-                    thisAmount += 300 * perf.getAudience();
-                    break;
-                default:
-                    throw new Error("unknown type");
-            }
+            int thisAmount = amountFor(perf,play);
             volumeCredits += Math.max(perf.getAudience() - 30, 0);
             if ("comedy".equals(play.getType())) {
                 volumeCredits += Math.floor(perf.getAudience() / 5);
@@ -56,6 +39,28 @@ public class Prototype {
         }
         result += "Amount owed is " + totalAmount / 100 + "￥ \n";
         result += "You earned " + volumeCredits + " credits\n";
+        return result;
+    }
+
+    private static int amountFor(Invoices perf, Plays play) {
+        int result = 0;
+        switch (play.getType()) {
+            case "tragedy":
+                result = 40000;
+                if (perf.getAudience() > 30) {
+                    result += 1000 * (perf.getAudience() - 30);
+                }
+                break;
+            case "comedy":
+                result = 30000;
+                if (perf.getAudience() > 20) {
+                    result += 10000 + 500 * (perf.getAudience() - 20);
+                }
+                result += 300 * perf.getAudience();
+                break;
+            default:
+                throw new Error("unknown type");
+        }
         return result;
     }
 
