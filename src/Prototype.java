@@ -28,7 +28,7 @@ public class Prototype {
         int volumeCredits = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            int thisAmount = amountFor(perf,playFor(perf));
+            int thisAmount = amountFor(perf);
             volumeCredits += Math.max(perf.getAudience() - 30, 0);
             if ("comedy".equals(playFor(perf).getType())) {
                 volumeCredits += Math.floor(perf.getAudience() / 5);
@@ -41,9 +41,9 @@ public class Prototype {
         return result;
     }
 
-    private static int amountFor(Invoices perf, Plays play) {
+    private static int amountFor(Invoices perf) {
         int result = 0;
-        switch (play.getType()) {
+        switch (playFor(perf).getType()) {
             case "tragedy":
                 result = 40000;
                 if (perf.getAudience() > 30) {
