@@ -28,7 +28,7 @@ public class Prototype {
         int volumeCredits = 0;
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            Plays play = playsMap.get(perf.getPlayID());
+            Plays play = playFor(perf);
             int thisAmount = amountFor(perf,play);
             volumeCredits += Math.max(perf.getAudience() - 30, 0);
             if ("comedy".equals(play.getType())) {
@@ -62,6 +62,10 @@ public class Prototype {
                 throw new Error("unknown type");
         }
         return result;
+    }
+
+    private static Plays playFor(Invoices perf){
+        return playsMap.get(perf.getPlayID());
     }
 
     public static void main(String[] args) {
