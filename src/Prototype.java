@@ -31,10 +31,7 @@ public class Prototype {
             totalAmount += amountFor(perf);
         }
 
-        int volumeCredits = 0;
-        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            volumeCredits += volumeCreditsFor(perf);
-        }
+        int volumeCredits = totalVolumeCredits();
 
         result += "Amount owed is " + totalAmount / 100 + "￥ \n";
         result += "You earned " + volumeCredits + " credits\n";
@@ -74,6 +71,14 @@ public class Prototype {
             result += Math.floor(perf.getAudience() / 5);
         }
         return result;
+    }
+
+    private static int totalVolumeCredits() {
+        int volumeCredits = 0;
+        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
     }
 
     public static void main(String[] args) {
