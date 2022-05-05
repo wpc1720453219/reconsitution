@@ -23,6 +23,13 @@ public class Prototype {
 
     }
 
+    /**
+     * 顶层的statement函数 现在只剩7行代码，而且它处理的都是与打印详单相关的逻辑
+     * <p>
+     * 与计算相关的逻辑从主函数中被移走，改由一组函数来支持。每个单独的计算过程和详单的整体结构，都因此变得更易理解了
+     *
+     * @return
+     */
     private static String statement() {
         String result = "Statement for " + invoicesMap.get("customer") + "\n";
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
@@ -81,7 +88,7 @@ public class Prototype {
         for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
             totalAmount += amountFor(perf);
         }
-        return  totalAmount;
+        return totalAmount;
     }
 
 
