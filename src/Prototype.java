@@ -20,7 +20,6 @@ public class Prototype {
                 new Invoices("as-like", 35),
                 new Invoices("othello", 40));
         invoicesMap.put("performances", invoicesList);
-
     }
 
     /**
@@ -31,12 +30,25 @@ public class Prototype {
      * @return
      */
     private static String statement() {
-        String result = "Statement for " + invoicesMap.get("customer") + "\n";
-        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+
+        Map<String, Object> statementData = null;
+        statementData = invoicesMap;
+
+        return renderPlainText(statementData);
+    }
+
+    /**
+     * 呈现纯文本
+     *
+     * @return
+     */
+    private static String renderPlainText(Map<String, Object> data) {
+        String result = "Statement for " + data.get("customer") + "\n";
+        for (Invoices perf : (List<Invoices>) data.get("performances")) {
             result += "  " + playFor(perf).getName() + ": " + amountFor(perf) / 100 + "￥(" + perf.getAudience() + " seats)\n";
         }
-        result += "Amount owed is " + totalAmount() / 100 + "￥ \n";
-        result += "You earned " + totalVolumeCredits() + " credits\n";
+        result += "Amount owed is " + totalAmount(data) / 100 + "￥ \n";
+        result += "You earned " + totalVolumeCredits(data) + " credits\n";
         return result;
     }
 
@@ -62,6 +74,13 @@ public class Prototype {
         return result;
     }
 
+    private static Invoices enrichPerformance(Invoices aPerformance) {
+        Invoices result = aPerformance;
+
+        return result;
+    }
+
+
     private static Plays playFor(Invoices perf) {
         return playsMap.get(perf.getPlayID());
     }
@@ -75,20 +94,20 @@ public class Prototype {
         return result;
     }
 
-    private static int totalVolumeCredits() {
-        int volumeCredits = 0;
-        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            volumeCredits += volumeCreditsFor(perf);
+    private static int totalVolumeCredits(Map<String, Object> data) {
+        int result = 0;
+        for (Invoices perf : (List<Invoices>) data.get("performances")) {
+            result += volumeCreditsFor(perf);
         }
-        return volumeCredits;
+        return result;
     }
 
-    private static int totalAmount() {
-        int totalAmount = 0;
-        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            totalAmount += amountFor(perf);
+    private static int totalAmount(Map<String, Object> data) {
+        int result = 0;
+        for (Invoices perf : (List<Invoices>) data.get("performances")) {
+            result += amountFor(perf);
         }
-        return totalAmount;
+        return result;
     }
 
 
