@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Prototype {
     static Map<String, Plays> playsMap = new HashMap<String, Plays>();
@@ -30,10 +27,15 @@ public class Prototype {
      * @return
      */
     private static String statement() {
-
-        Map<String, Object> statementData = null;
-        statementData = invoicesMap;
-
+        StatementData statementData = new StatementData();
+        statementData.setCustomer((String) invoicesMap.get("customer"));
+        List<Performances> performances = new ArrayList<>();
+        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+            performances.add(enrichPerformance(perf));
+        }
+        statementData.setPerformances(performances);
+        statementData.setTotalAmount(totalAmount(statementData));
+        statementData.setVolumeCredits(totalVolumeCredits(statementData));
         return renderPlainText(statementData);
     }
 
@@ -42,31 +44,30 @@ public class Prototype {
      *
      * @return
      */
-    private static String renderPlainText(Map<String, Object> data) {
-        String result = "Statement for " + data.get("customer") + "\n";
-        for (Invoices perf : (List<Invoices>) data.get("performances")) {
-            result += "  " + playFor(perf).getName() + ": " + amountFor(perf) / 100 + "￥(" + perf.getAudience() + " seats)\n";
-        }
+    private static String renderPlainText(StatementData data) {
+        String result = "Statement for " + data.getCustomer() + "\n";
+        for (Performances perf : data.getPerformances())
+            result += "  " + perf.getPlays().getName() + ": " + perf.getAmount()  / 100 + "￥(" + perf.getPerf().getAudience() + " seats)\n";
         result += "Amount owed is " + totalAmount(data) / 100 + "￥ \n";
         result += "You earned " + totalVolumeCredits(data) + " credits\n";
         return result;
     }
 
-    private static int amountFor(Invoices perf) {
+    private static int amountFor(Performances aPerformances) {
         int result = 0;
-        switch (playFor(perf).getType()) {
+        switch (aPerformances.getPlays().getType()) {
             case "tragedy":
                 result = 40000;
-                if (perf.getAudience() > 30) {
-                    result += 1000 * (perf.getAudience() - 30);
+                if (aPerformances.getPerf().getAudience() > 30) {
+                    result += 1000 * (aPerformances.getPerf().getAudience() - 30);
                 }
                 break;
             case "comedy":
                 result = 30000;
-                if (perf.getAudience() > 20) {
-                    result += 10000 + 500 * (perf.getAudience() - 20);
+                if (aPerformances.getPerf().getAudience() > 20) {
+                    result += 10000 + 500 * (aPerformances.getPerf().getAudience() - 20);
                 }
-                result += 300 * perf.getAudience();
+                result += 300 * aPerformances.getPerf().getAudience();
                 break;
             default:
                 throw new Error("unknown type");
@@ -74,9 +75,12 @@ public class Prototype {
         return result;
     }
 
-    private static Invoices enrichPerformance(Invoices aPerformance) {
-        Invoices result = aPerformance;
-
+    private static Performances enrichPerformance(Invoices perf) {
+        Performances result = new Performances();
+        result.setPlays(playFor(perf));
+        result.setPerf(perf);
+        result.setAmount(amountFor(result));
+        result.setCredits(volumeCreditsFor(result));
         return result;
     }
 
@@ -85,27 +89,27 @@ public class Prototype {
         return playsMap.get(perf.getPlayID());
     }
 
-    private static int volumeCreditsFor(Invoices perf) {
+    private static int volumeCreditsFor(Performances perf) {
         int result = 0;
-        result += Math.max(perf.getAudience() - 30, 0);
-        if ("comedy".equals(playFor(perf).getType())) {
-            result += Math.floor(perf.getAudience() / 5);
+        result += Math.max(perf.getPerf().getAudience() - 30, 0);
+        if ("comedy".equals(perf.getPlays().getType())) {
+            result += Math.floor(perf.getPerf().getAudience() / 5);
         }
         return result;
     }
 
-    private static int totalVolumeCredits(Map<String, Object> data) {
+    private static int totalVolumeCredits(StatementData data) {
         int result = 0;
-        for (Invoices perf : (List<Invoices>) data.get("performances")) {
-            result += volumeCreditsFor(perf);
+        for (Performances perf : data.getPerformances()) {
+            result += perf.getCredits();
         }
         return result;
     }
 
-    private static int totalAmount(Map<String, Object> data) {
+    private static int totalAmount(StatementData data) {
         int result = 0;
-        for (Invoices perf : (List<Invoices>) data.get("performances")) {
-            result += amountFor(perf);
+        for (Performances perf : data.getPerformances()) {
+            result += perf.getAmount();
         }
         return result;
     }
