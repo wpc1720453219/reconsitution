@@ -1,6 +1,8 @@
-import java.util.Collection;
 import java.util.List;
 
+/**
+ * statement 数据
+ */
 public class StatementData {
     private String customer;
     private Integer totalAmount;

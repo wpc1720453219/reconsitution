@@ -27,6 +27,7 @@ public class Prototype {
      * @return
      */
     private static String statement() {
+        // 数据处理，进行封装
         StatementData statementData = new StatementData();
         statementData.setCustomer((String) invoicesMap.get("customer"));
         List<Performances> performances = new ArrayList<>();
@@ -36,6 +37,8 @@ public class Prototype {
         statementData.setPerformances(performances);
         statementData.setTotalAmount(totalAmount(statementData));
         statementData.setVolumeCredits(totalVolumeCredits(statementData));
+
+        //呈现纯文本
         return renderPlainText(statementData);
     }
 
@@ -47,9 +50,9 @@ public class Prototype {
     private static String renderPlainText(StatementData data) {
         String result = "Statement for " + data.getCustomer() + "\n";
         for (Performances perf : data.getPerformances())
-            result += "  " + perf.getPlays().getName() + ": " + perf.getAmount()  / 100 + "￥(" + perf.getPerf().getAudience() + " seats)\n";
-        result += "Amount owed is " + totalAmount(data) / 100 + "￥ \n";
-        result += "You earned " + totalVolumeCredits(data) + " credits\n";
+            result += "  " + perf.getPlays().getName() + ": " + perf.getAmount() / 100 + "￥(" + perf.getPerf().getAudience() + " seats)\n";
+        result += "Amount owed is " + data.getTotalAmount() / 100 + "￥ \n";
+        result += "You earned " + data.getVolumeCredits() + " credits\n";
         return result;
     }
 
