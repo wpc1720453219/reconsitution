@@ -113,7 +113,8 @@ public class Prototype {
 
     private static Performances enrichPerformance(Invoices perf) {
         Performances result = new Performances();
-        result.setPlays(playFor(perf));
+        PerformanceCalculator calculator = new PerformanceCalculator(result, playFor(perf));
+        result.setPlays(calculator.getPlays());
         result.setPerf(perf);
         result.setAmount(amountFor(result));
         result.setCredits(volumeCreditsFor(result));
@@ -148,6 +149,17 @@ public class Prototype {
             result += perf.getAmount();
         }
         return result;
+    }
+
+    private static PerformanceCalculator createPerformanceCalculator(Performances performances, Plays plays) {
+        switch (plays.getType()) {
+            case "tragedy":
+                return new TragedyCalculator(performances, plays);
+            case "comedy":
+                return new ComedyCalculator(performances, plays);
+            default:
+                throw new Error("unknwn type:" + plays.getType());
+        }
     }
 
 
