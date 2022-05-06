@@ -27,19 +27,8 @@ public class Prototype {
      * @return
      */
     private static String statement() {
-        // 数据处理，进行封装
-        StatementData statementData = new StatementData();
-        statementData.setCustomer((String) invoicesMap.get("customer"));
-        List<Performances> performances = new ArrayList<>();
-        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
-            performances.add(enrichPerformance(perf));
-        }
-        statementData.setPerformances(performances);
-        statementData.setTotalAmount(totalAmount(statementData));
-        statementData.setVolumeCredits(totalVolumeCredits(statementData));
-
         //呈现纯文本
-        return renderPlainText(statementData);
+        return renderPlainText(createStatementData());
     }
 
     /**
@@ -55,6 +44,50 @@ public class Prototype {
         result += "You earned " + data.getVolumeCredits() + " credits\n";
         return result;
     }
+
+    private static String htmlStatement() {
+        // 呈现HTML版本
+        return renderHtml(createStatementData());
+    }
+
+    /**
+     * 呈现HTML版本
+     *
+     * @param data
+     * @return
+     */
+    private static String renderHtml(StatementData data) {
+        String result = "<h1>Statement for " + data.getCustomer() + "</h1>\n";
+        result += "<table>\n";
+        result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>\n";
+        for (Performances performances : data.getPerformances()) {
+            result += "<tr><td>" + performances.getPlays().getName() + "</td><td>" + performances.getPerf().getAudience() + "</td>";
+            result += "<td>" + performances.getAmount() / 100 + "￥</td></tr>\n";
+        }
+        result += "</table>\n";
+        result += "<p>Amount owed is <em>" + data.getTotalAmount() / 100 + "￥</em></p>\n";
+        result += "<p>You earned <em>" + data.getVolumeCredits() + "</em> credits</p>\n";
+        return result;
+    }
+
+    /**
+     * 数据处理，进行封装
+     *
+     * @return
+     */
+    private static StatementData createStatementData() {
+        StatementData statementData = new StatementData();
+        statementData.setCustomer((String) invoicesMap.get("customer"));
+        List<Performances> performances = new ArrayList<>();
+        for (Invoices perf : (List<Invoices>) invoicesMap.get("performances")) {
+            performances.add(enrichPerformance(perf));
+        }
+        statementData.setPerformances(performances);
+        statementData.setTotalAmount(totalAmount(statementData));
+        statementData.setVolumeCredits(totalVolumeCredits(statementData));
+        return statementData;
+    }
+
 
     private static int amountFor(Performances aPerformances) {
         int result = 0;
@@ -120,5 +153,6 @@ public class Prototype {
 
     public static void main(String[] args) {
         System.out.println(statement());
+        System.out.println(htmlStatement());
     }
 }
