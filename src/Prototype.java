@@ -92,9 +92,13 @@ public class Prototype {
 
     private static Performances enrichPerformance(Invoices perf) {
         Performances result = new Performances();
+        // 代替 过去的 amountFor方法 用数据结构封装返回
         PerformanceCalculator calculator = createPerformanceCalculator(result, playFor(perf));
+
+        // result 有了数据，但因为calculator 里引用了result 也会回显到PerformanceCalculator里
         result.setPlays(calculator.getPlays());
         result.setPerf(perf);
+
         result.setAmount(calculator.amount());
         result.setCredits(calculator.volumeCredits());
         return result;
@@ -103,15 +107,6 @@ public class Prototype {
 
     private static Plays playFor(Invoices perf) {
         return playsMap.get(perf.getPlayID());
-    }
-
-    private static int volumeCreditsFor(Performances perf) {
-        int result = 0;
-        result += Math.max(perf.getPerf().getAudience() - 30, 0);
-        if ("comedy".equals(perf.getPlays().getType())) {
-            result += Math.floor(perf.getPerf().getAudience() / 5);
-        }
-        return result;
     }
 
     private static int totalVolumeCredits(StatementData data) {
@@ -130,6 +125,13 @@ public class Prototype {
         return result;
     }
 
+    /**
+     * 代替 过去的 amountFor方法 ，通过多态的性质，再用一个数据结构封装一层
+     *
+     * @param performances
+     * @param plays
+     * @return
+     */
     private static PerformanceCalculator createPerformanceCalculator(Performances performances, Plays plays) {
         switch (plays.getType()) {
             case "tragedy":
