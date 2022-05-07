@@ -7,8 +7,8 @@ public class TragedyCalculator extends PerformanceCalculator {
     @Override
     public int amount() {
         int result = 40000;
-        if (perf.getAudience() > 30) {
-            result += 1000 * (perf.getAudience() - 30);
+        if (super.getPerformances().getPerf().getAudience() > 30) {
+            result += 1000 * (super.getPerformances().getPerf().getAudience() - 30);
         }
         return result;
     }

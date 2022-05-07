@@ -89,35 +89,14 @@ public class Prototype {
     }
 
 
-    private static int amountFor(Performances aPerformances) {
-        int result = 0;
-        switch (aPerformances.getPlays().getType()) {
-            case "tragedy":
-                result = 40000;
-                if (aPerformances.getPerf().getAudience() > 30) {
-                    result += 1000 * (aPerformances.getPerf().getAudience() - 30);
-                }
-                break;
-            case "comedy":
-                result = 30000;
-                if (aPerformances.getPerf().getAudience() > 20) {
-                    result += 10000 + 500 * (aPerformances.getPerf().getAudience() - 20);
-                }
-                result += 300 * aPerformances.getPerf().getAudience();
-                break;
-            default:
-                throw new Error("unknown type");
-        }
-        return result;
-    }
 
     private static Performances enrichPerformance(Invoices perf) {
         Performances result = new Performances();
-        PerformanceCalculator calculator = new PerformanceCalculator(result, playFor(perf));
+        PerformanceCalculator calculator = createPerformanceCalculator(result, playFor(perf));
         result.setPlays(calculator.getPlays());
         result.setPerf(perf);
-        result.setAmount(amountFor(result));
-        result.setCredits(volumeCreditsFor(result));
+        result.setAmount(calculator.amount());
+        result.setCredits(calculator.volumeCredits());
         return result;
     }
 

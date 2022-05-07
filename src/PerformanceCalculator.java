@@ -15,4 +15,20 @@ public class PerformanceCalculator {
     public int volumeCredits() {
         return Math.max(performances.getPerf().getAudience() - 30, 0);
     }
+
+    public Performances getPerformances() {
+        return performances;
+    }
+
+    public void setPerformances(Performances performances) {
+        this.performances = performances;
+    }
+
+    public Plays getPlays() {
+        return plays;
+    }
+
+    public void setPlays(Plays plays) {
+        this.plays = plays;
+    }
 }

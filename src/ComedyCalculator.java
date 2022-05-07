@@ -7,14 +7,15 @@ public class ComedyCalculator extends PerformanceCalculator {
     @Override
     public int amount() {
         int result = 30000;
-        if (this.performances.getPerf().getAudience() > 20) {
-            result += 10000 + 500 * (performances.getPerf().getAudience() - 20);
+        if (super.getPerformances().getPerf().getAudience() > 20) {
+            result += 10000 + 500 * (super.getPerformances().getPerf().getAudience() - 20);
         }
-        result += 300 * perf.getAudience();
+        result += 300 * super.getPerformances().getPerf().getAudience();
         return result;
     }
+
     @Override
     public int volumeCredits() {
-        return super.volumeCredits(perf) + (int) Math.floor(perf.getAudience() / 5);
+        return super.volumeCredits() + (int) Math.floor(super.getPerformances().getPerf().getAudience() / 5);
     }
 }
