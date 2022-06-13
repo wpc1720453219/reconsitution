@@ -342,3 +342,6 @@ manager = aPerson.department.manager;  揭露了Department的工作原理,知道
 ![img_38.png](img_38.png)
 ![img_39.png](img_39.png)
 组合取代继承
+
+工作中常有的重构：
+
